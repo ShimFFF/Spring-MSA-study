@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/first-service")
 public class FirstServiceController {
     @Value("${server.port}")
-    private String serverPort;
+    private String serverPort; // 서버 포트를 출력해보기 위해 사용하는 변수
+                                // 환경 변수를 사용하려면 @Value 어노테이션을 사용해야 함
 
     @GetMapping("/welcome")
     public String welcome() {
