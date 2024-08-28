@@ -13,37 +13,36 @@ spring:
     name: gateway-service
   cloud:
     gateway:
-      mvc:
-        default-filters: # ?? ?? ??, ??? ?? ??? ??
+      default-filters: # ?? ?? ??, ??? ?? ??? ??
           # ?? ??? ?? ??, ?? ??? ??, ?? ??? ??
-          - name: GlobalFilter
-            args:
-              baseMessage: Spring Cloud Gateway Global Filter
-              preLogger: true
-              postLogger: true
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
 
-        routes:
-          - id: first-service
-            uri: http://localhost:8081/
-            # /first-service? ???? http://localhost:8001/first-service/**? ???
-            predicates:
-              - Path=/first-service/**
-            filters: # ?? ?? ? key ? ?? ?? ? velue ?
-#              - AddRequestHeader=first-request, first-request-header2
-#              - AddResponseHeader=first-response, first-response-header2
-              - CustomFilter
+      routes:
+        - id: first-service
+          uri: http://localhost:8081/
+          # /first-service? ???? http://localhost:8001/first-service/**? ???
+          predicates:
+            - Path=/first-service/**
+          filters: # ?? ?? ? key ? ?? ?? ? velue ?
+#             - AddRequestHeader=first-request, first-request-header2
+#             - AddResponseHeader=first-response, first-response-header2
+            - CustomFilter
 
-          - id: second-service
-            uri: http://localhost:8082/
-            predicates:
-              - Path=/second-service/**
-            filters:
-#              - AddRequestHeader=second-request, second-request-header2
-#              - AddResponseHeader=second-response, second-response-header2
-                - name: CustomFilter
-                - name: LoggingFilter
-                  args:
-                    baseMessage: Spring Cloud Gateway Logging Filter
-                    preLogger: true
-                    postLogger: true
+        - id: second-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/second-service/**
+          filters:
+#             - AddRequestHeader=second-request, second-request-header2
+#             - AddResponseHeader=second-response, second-response-header2
+              - name: CustomFilter
+              - name: LoggingFilter
+                args:
+                  baseMessage: Spring Cloud Gateway Logging Filter
+                  preLogger: true
+                  postLogger: true
 
