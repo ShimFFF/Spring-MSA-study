@@ -37,6 +37,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//모델맵처 2.3.8 버전 사용
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 }
 
 dependencyManagement {
