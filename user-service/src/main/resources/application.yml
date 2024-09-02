@@ -1,14 +1,42 @@
 server:
-  port: 0 # ??? ??(??)? ??
+  port: 8080 # 랜덤 포트로 실행
 
 spring:
   application:
     name: user-service
+
+  # H2 Console 설정
+  h2:
+    console: # H2 DB를 웹에서 관리할 수 있는 기능
+      settings:
+        web-allow-others: true # 다른 사용자 접근 허용
+      path: /h2-console       # H2 Console 접근 URL
+      enabled: true           # H2 Console 사용 여부
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/test
+    username: sa
+    password:
+
+  # JPA 설정
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create        # DB 초기화 전략 (none, create, create-drop, update, validate)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true      # 쿼리 로그 포맷 (정렬)
+        show_sql: true        # 쿼리 로그 출력
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
-    register-with-eureka: true  # eureka ??? ??
-    fetch-registry: true  # eureka ????? ??? ???
-    service-url:  # eureka ?? ??
+    register-with-eureka: true  # 유레카 서버에 등록할지 여부
+    fetch-registry: true  # 유레카 서버에서 정보를 가져올지 여부
+    service-url:  # 유레카 서버 주소
       defaultZone: http://localhost:8761/eureka
+
+greeting:
+  message: Hello, ${spring.application.name}
+
