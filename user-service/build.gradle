@@ -40,6 +40,9 @@ dependencies {
 
 	//모델맵처 2.3.8 버전 사용
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
+
+	// 스웨거
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
 dependencyManagement {
