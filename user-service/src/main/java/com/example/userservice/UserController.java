@@ -30,8 +30,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/heath_check")
-    public String hello() {
-        return ("applicaion is running");
+    public String status() {
+        return String.format("It's Working in Catalog Service on PORT %s"
+                , evn.getProperty("local.server.port"));
     }
 
     @GetMapping("/welecome")
