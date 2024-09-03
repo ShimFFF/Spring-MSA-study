@@ -11,6 +11,9 @@ import java.util.Date;
 @Entity
 @Table(name = "catalog")
 public class CatalogEntity implements Serializable {
+    //직렬화를 넣는 이유
+    // 객체를 다른 서버로 전송할 때 객체를 직렬화해서 전송해야한다.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
