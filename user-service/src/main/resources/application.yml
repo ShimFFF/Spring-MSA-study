@@ -40,3 +40,6 @@ eureka:
 greeting:
   message: Hello, ${spring.application.name}
 
+#jwt 만료 기간
+jwt:
+  expiration: 86400000 # 1일
