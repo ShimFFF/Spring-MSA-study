@@ -72,8 +72,7 @@ public class UserService implements UserDetailsService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        UserDto userDto = mapper.map(userEntity, UserDto.class);
-        return userDto;
+        return mapper.map(userEntity, UserDto.class);
     }
 
     @Override // UserDetailsService의 추상 메서드 구현, 로그인 시 사용자 정보를 가져오는 메서드
