@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserDto createUser(UserDto userDto) {
         userDto.setUserId(UUID.randomUUID().toString());
@@ -35,13 +37,11 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = mapper.map(userDto, UserEntity.class);
 
         // 비밀번호 암호화 시켜 저장
-        userEntity.setEncryptedPwd("passwordEncoder.encode(userDto.getPwd())");
+        userEntity.setEncryptedPwd(passwordEncoder.encode(userDto.getPwd()));
 
         userRepository.save(userEntity);
 
-        UserDto returnUserDto = mapper.map(userEntity, UserDto.class);
-
-        return returnUserDto;
+        return mapper.map(userEntity, UserDto.class);
     }
 
     public UserDto getUserByUserId(String userId) {
