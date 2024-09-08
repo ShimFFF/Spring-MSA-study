@@ -22,10 +22,38 @@ spring:
             postLogger: true
 
       routes:
+#        - id: user-service
+#          uri: lb://USER-SERVICE
+#          predicates:
+#            - Path=/user-service/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/**
+            - Path=/user-service/login # 로그인 요청이 오면
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie # 전달되는 Data값을 매번 새로운 데이터로 인식하기 위해
+            # /user-service/(?<segment.*>)로 들어오는 요청을 /${segment}로 변경
+            # Uri 값을 다시 작성해서 전달하는 방식으로 바꿔봄
+            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/users # 회원가입 요청이 오면
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/** # 나머지 요청이 오면
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
 
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
