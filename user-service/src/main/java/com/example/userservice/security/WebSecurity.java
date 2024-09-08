@@ -11,6 +11,8 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -55,11 +57,14 @@ public class WebSecurity {
         // Configure AuthenticationManagerBuilder
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
+        // userDetailsService() 메소드를 사용하여 사용자 정보를 가져오는 서비스를 설정
+        // 사용자 검색을 해옴
+        // passwordEncoder() 메소드를 사용하여 비밀번호를 암호화해서 DB 비번과 비교
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-        http.csrf( (csrf) -> csrf.disable()); // csrf 비활성화
+        http.csrf(AbstractHttpConfigurer::disable); // csrf 비활성화
 //        http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests((authz) -> authz
@@ -73,7 +78,7 @@ public class WebSecurity {
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
 //                              .requestMatchers("/**").access(this::hasIpAddress)
-                                .requestMatchers("/**").access(
+                                .requestMatchers("/**").access( // 해당 허용된 IP 주소로부터의 요청만 허용
                                         new WebExpressionAuthorizationManager("hasIpAddress('localhost') or hasIpAddress('127.0.0.1') or hasIpAddress('172.30.96.94')")) // host pc ip address
                                 .anyRequest().authenticated()
                 )
@@ -82,7 +87,7 @@ public class WebSecurity {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilter(getAuthenticationFilter(authenticationManager));
-        http.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.sameOrigin()));
+        http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         return http.build();
     }
@@ -92,6 +97,7 @@ public class WebSecurity {
     }
 
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+        // AuthenticationFilter 객체 생성
         return new AuthenticationFilter(authenticationManager, userService, env);
     }
 
