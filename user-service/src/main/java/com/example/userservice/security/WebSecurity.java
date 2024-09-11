@@ -34,10 +34,10 @@ public class WebSecurity {
     private final BCryptPasswordEncoder bCryptPasswordEncoder; // 비밀번호 암호화
     private final Environment env;
 
-    @Value("${server.ip}")
-    public static String ALLOWED_IP_ADDRESS;
-    public static final String SUBNET = "/32";
-    public static final IpAddressMatcher ALLOWED_IP_ADDRESS_MATCHER = new IpAddressMatcher(ALLOWED_IP_ADDRESS + SUBNET);
+//    @Value("${server.ip}")
+//    public static String ALLOWED_IP_ADDRESS;
+//    public static final String SUBNET = "/32";
+//    public static final IpAddressMatcher ALLOWED_IP_ADDRESS_MATCHER = new IpAddressMatcher(ALLOWED_IP_ADDRESS + SUBNET);
 
     @Autowired //개발자에 의해 인스턴스가 만들어 지는 것이 아니라, Spring에 의해 자동으로 주입되는 것
     // -> Spring 컨텍스트가 기동이 되면서 자동으로 등록할 수 있는 빈들을 찾아서 메모리에 객체를 생성
@@ -92,9 +92,9 @@ public class WebSecurity {
         return http.build();
     }
 
-    private AuthorizationDecision hasIpAddress(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-        return new AuthorizationDecision(ALLOWED_IP_ADDRESS_MATCHER.matches(object.getRequest()));
-    }
+//    private AuthorizationDecision hasIpAddress(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
+//        return new AuthorizationDecision(ALLOWED_IP_ADDRESS_MATCHER.matches(object.getRequest()));
+//    }
 
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         // AuthenticationFilter 객체 생성
