@@ -39,7 +39,7 @@ spring:
             - RemoveRequestHeader=Cookie # 전달되는 Data값을 매번 새로운 데이터로 인식하기 위해
             # /user-service/(?<segment.*>)로 들어오는 요청을 /${segment}로 변경
             # Uri 값을 다시 작성해서 전달하는 방식으로 바꿔봄
-            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
+            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
 
         - id: user-service
           uri: lb://USER-SERVICE
@@ -48,7 +48,16 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
+            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/** # 엑추에이터 호출하면
+            - Method=POST, GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
 
         - id: user-service
           uri: lb://USER-SERVICE
@@ -57,7 +66,7 @@ spring:
             - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
-            - ReWritePath=/user-service/(?<segment.*>), /$\{segment}
+            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
 
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
@@ -98,4 +107,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans
+        include: refresh, health, beans, httptrace
