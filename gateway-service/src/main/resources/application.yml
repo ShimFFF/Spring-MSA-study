@@ -93,3 +93,9 @@ spring:
                   preLogger: true
                   postLogger: true
 
+# 엑추에이터 설정, actuator/refresh로 접속하면 설정을 다시 불러옴
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
