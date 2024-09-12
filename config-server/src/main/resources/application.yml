@@ -9,10 +9,11 @@ spring:
   cloud:
     config:
       server:
-#        native:
+#        native: # 로컬 파일 시스템에서 설정 파일을 읽을 때 사용
 #          search-locations: file:///C://work//git-local-repo
         git: #default uri? ????? ?? ??? ??
-          uri: https://github.com/ShimFFF/Spring-MSA-Study-config
+          uri: https://github.com/ShimFFF/Spring-MSA-study
+          search-paths: config/**
           default-label: main
         #          username: <github-id>
         #          password: <gihub-accessToken>
