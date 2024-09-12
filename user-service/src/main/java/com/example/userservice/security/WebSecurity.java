@@ -76,10 +76,9 @@ public class WebSecurity {
                                 .requestMatchers(new AntPathRequestMatcher("/health-check")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-//                              .requestMatchers("/**").access(this::hasIpAddress)
+                                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()//                              .requestMatchers("/**").access(this::hasIpAddress)
                                 .requestMatchers("/**").access( // 해당 허용된 IP 주소로부터의 요청만 허용
-                                        new WebExpressionAuthorizationManager("hasIpAddress('localhost') or hasIpAddress('127.0.0.1') or hasIpAddress('172.30.96.94')")) // host pc ip address
+                                        new WebExpressionAuthorizationManager("hasIpAddress('172.25.82.232') or hasIpAddress('127.0.0.1') or hasIpAddress('172.30.96.94')")) // host pc ip address
                                 .anyRequest().authenticated()
                 )
                 .authenticationManager(authenticationManager)

@@ -2,8 +2,15 @@ server:
   port: 8080 # 랜덤 포트로 실행
 
 spring:
+  config:
+    import: optional:configserver:http://172.25.82.232:8888/
+
   application:
     name: user-service
+
+  cloud:
+    config:
+        uri: http://172.25.82.232:8888
 
   # H2 Console 설정
   h2:
@@ -41,5 +48,5 @@ greeting:
   message: Hello, ${spring.application.name}
 
 #jwt 만료 기간
-jwt:
-  expiration: 86400000 # 1일
+#jwt:
+#  expiration: 86400000 # 1일

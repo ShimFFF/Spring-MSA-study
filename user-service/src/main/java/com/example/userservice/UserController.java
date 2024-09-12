@@ -4,7 +4,6 @@ import com.example.userservice.dto.UserDto;
 import com.example.userservice.valueobject.Greeting;
 import com.example.userservice.valueobject.RequestUser;
 import com.example.userservice.valueobject.ResponseUser;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -32,7 +31,11 @@ public class UserController {
     @GetMapping("/heath_check")
     public String status() {
         return String.format("It's Working in Catalog Service on PORT %s"
-                , evn.getProperty("local.server.port"));
+                , evn.getProperty("local.server.port")
+                + " port(server.port) = " + evn.getProperty("server.port")
+                + "with token sercret= " + evn.getProperty("token.secret")
+                + "with token expiration time= " + evn.getProperty("token.expiration_time")
+        );
     }
 
     @GetMapping("/welecome")
