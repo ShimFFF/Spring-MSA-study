@@ -2,4 +2,4 @@ token:
   expriration_time: 864000000
   secret: user_token
 gateway:
-  ip: ${{secrets.IP}}
+  ip: 192.168.45.36
