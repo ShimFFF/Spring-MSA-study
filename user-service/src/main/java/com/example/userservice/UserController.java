@@ -33,8 +33,8 @@ public class UserController {
         return String.format("It's Working in Catalog Service on PORT %s"
                 , evn.getProperty("local.server.port")
                 + " port(server.port) = " + evn.getProperty("server.port")
-                + "with token sercret= " + evn.getProperty("token.secret")
-                + "with token expiration time= " + evn.getProperty("token.expiration_time")
+                + " with token sercret= " + evn.getProperty("token.secret")
+                + " with token expiration time= " + evn.getProperty("token.expiration_time")
         );
     }
 
