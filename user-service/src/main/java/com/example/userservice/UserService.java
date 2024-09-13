@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService /*implements UserDetailsService*/ {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -64,32 +64,32 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserDto getUserDetailsByEmail(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email);
-        if (userEntity == null)
-            throw new UsernameNotFoundException(email);
+//    public UserDto getUserDetailsByEmail(String email) {
+//        UserEntity userEntity = userRepository.findByEmail(email);
+//        if (userEntity == null)
+//            throw new UsernameNotFoundException(email);
+//
+//        ModelMapper mapper = new ModelMapper();
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//
+//        return mapper.map(userEntity, UserDto.class);
+//    }
 
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-        return mapper.map(userEntity, UserDto.class);
-    }
-
-    @Override // UserDetailsService의 추상 메서드 구현, 로그인 시 사용자 정보를 가져오는 메서드
-    // UserDetailsService를 상속받아 loadUserByUsername 메서드를 구현하면
-    // 스프링 시큐리티가 로그인 요청을 처리할 때 이 메서드를 호출하여 사용자 정보를 가져옴
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserEntity userEntity = userRepository.findByEmail(username);
-
-        if (userEntity == null)
-            throw new UsernameNotFoundException(username + ": not found");
-
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
-                true, true, true, true,
-                new ArrayList<>());
-
-    }
+//    @Override // UserDetailsService의 추상 메서드 구현, 로그인 시 사용자 정보를 가져오는 메서드
+//    // UserDetailsService를 상속받아 loadUserByUsername 메서드를 구현하면
+//    // 스프링 시큐리티가 로그인 요청을 처리할 때 이 메서드를 호출하여 사용자 정보를 가져옴
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//
+//        UserEntity userEntity = userRepository.findByEmail(username);
+//
+//        if (userEntity == null)
+//            throw new UsernameNotFoundException(username + ": not found");
+//
+//        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
+//                true, true, true, true,
+//                new ArrayList<>());
+//
+//    }
 
 
 }
