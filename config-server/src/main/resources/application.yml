@@ -24,11 +24,11 @@ spring:
 #    username: guestx
 #    password: guest
 
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: health, busrefresh, refresh, metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh, refresh, metrics
 
 logging:
   level:
