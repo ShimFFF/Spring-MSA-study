@@ -1,5 +1,5 @@
 server:
-  port: 8080 # 랜덤 포트로 실행
+  port: 60000 # 랜덤 포트로 실행
 
 spring:
   config:
@@ -65,9 +65,9 @@ management:
     propagation:
       consume: B3
       produce: B3
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
+#  zipkin:
+#    tracing:
+#      endpoint: http://localhost:9411/api/v2/spans
 
   endpoints:
     web:
