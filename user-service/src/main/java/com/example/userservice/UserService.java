@@ -1,95 +1,156 @@
 package com.example.userservice;
 
+import com.example.userservice.client.CatalogServiceClient;
+import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.dto.UserDto;
-import com.example.userservice.valueobject.ResponseOrder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.example.userservice.vo.ResponseOrder;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-//import org.springframework.security.core.userdetails.User;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.core.env.Environment;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
-public class UserService /*implements UserDetailsService*/ {
+@Slf4j
+public class UserService implements UserDetailsService {
+    UserRepository userRepository;
+    BCryptPasswordEncoder passwordEncoder;
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    Environment env;
+    RestTemplate restTemplate;
+
+    OrderServiceClient orderServiceClient;
+    CatalogServiceClient catalogServiceClient;
+
+    CircuitBreakerFactory circuitBreakerFactory;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(username);
+
+        if (userEntity == null)
+            throw new UsernameNotFoundException(username + ": not found");
+
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
+                true, true, true, true,
+                new ArrayList<>());
+    }
+
+    @Autowired
+    public UserService(UserRepository userRepository,
+                           BCryptPasswordEncoder passwordEncoder,
+                           Environment env,
+                           RestTemplate restTemplate,
+                           OrderServiceClient orderServiceClient,
+                           CatalogServiceClient catalogServiceClient,
+                           CircuitBreakerFactory circuitBreakerFactory) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.env = env;
+        this.restTemplate = restTemplate;
+        this.orderServiceClient = orderServiceClient;
+        this.catalogServiceClient = catalogServiceClient;
+        this.circuitBreakerFactory = circuitBreakerFactory;
+    }
 
     public UserDto createUser(UserDto userDto) {
         userDto.setUserId(UUID.randomUUID().toString());
 
-        // 모델맵퍼 사용
-        // UserDto -> UserEntity
-        // 모델 맵처 작동 방식: UserDto 객체의 필드와 UserEntity 객체의 필드가 일치하는 경우,
-        // 모델 맵퍼는 두 객체 간의 필드 값을 복사하여 객체를 변환
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserEntity userEntity = mapper.map(userDto, UserEntity.class);
-
-        // 비밀번호 암호화 시켜 저장
         userEntity.setEncryptedPwd(passwordEncoder.encode(userDto.getPwd()));
 
         userRepository.save(userEntity);
 
-        return mapper.map(userEntity, UserDto.class);
+        UserDto returnUserDto = mapper.map(userEntity, UserDto.class);
+
+        return returnUserDto;
     }
 
     public UserDto getUserByUserId(String userId) {
         UserEntity userEntity = userRepository.findByUserId(userId);
-        if (userEntity == null) {
-            //throw new UsernameNotFoundException("User not found");
-        }
+
+        if (userEntity == null)
+            throw new UsernameNotFoundException("User not found");
+
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-        //일단 null로 지정
-        List<ResponseOrder> orders = new ArrayList<>();
-        userDto.setOrders(orders);
+        log.info("Before call orders microservice");
+        List<ResponseOrder> ordersList = new ArrayList<>();
+        /* #1-1 Connect to order-service using a rest template */
+        /* @LoadBalanced 로 선언헀으면, apigateway-service로 호출 못함 */
+        /* http://ORDER-SERVICE/order-service/1234-45565-34343423432/orders */
+//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//        String orderUrl = String.format("http://127.0.0.1:8000/order-service/%s/orders", userId);
+//        ResponseEntity<List<ResponseOrder>> orderListResponse =
+//                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+//                                            new ParameterizedTypeReference<List<ResponseOrder>>() {
+//                });
+//        ordersList = orderListResponse.getBody();
+        /* #1-2 Connect to catalog-service using a rest template */
+        /* http://CATALOG-SERVICE/catalog-service/catalogs */
+//        List<ResponseCatalog> catalogList = new ArrayList<>();
+//        String catalogUrl = "http://127.0.0.1:8000/catalog-service/catalogs";
+//        ResponseEntity<List<ResponseCatalog>> catalogListResponse =
+//                restTemplate.exchange(catalogUrl, HttpMethod.GET, null,
+//                                            new ParameterizedTypeReference<List<ResponseCatalog>>() {
+//                });
+//        catalogList = catalogListResponse.getBody();
+//        System.out.println(catalogList);
+
+        /* Using a feign client */
+        /* #2 Feign exception handling */
+        try {
+//            ResponseEntity<List<ResponseOrder>> _ordersList = orderServiceClient.getOrders(userId);
+//            ordersList = _ordersList.getBody();
+            ordersList = orderServiceClient.getOrders(userId);
+        } catch (FeignException ex) {
+            log.error(ex.getMessage());
+        }
+
+        /* #3-1 ErrorDecoder */
+//        ordersList = orderServiceClient.getOrders(userId);
+//        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker1");
+//        CircuitBreaker circuitBreaker2 = circuitBreakerFactory.create("circuitBreaker2");
+//        ordersList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId),
+//                throwable -> new ArrayList<>());
+        /* #3-2 ErrorDecoder for catalog-service */
+//        List<ResponseCatalog> catalogList = catalogServiceClient.getCatalogs();
+
+        userDto.setOrders(ordersList);
+
+        log.info("After called orders microservice");
 
         return userDto;
     }
 
-    // UserDto 객체로 변환 해줘도 상관 없음
     public Iterable<UserEntity> getUserByAll() {
         return userRepository.findAll();
     }
 
+    public UserDto getUserDetailsByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null)
+            throw new UsernameNotFoundException(email);
 
-//    public UserDto getUserDetailsByEmail(String email) {
-//        UserEntity userEntity = userRepository.findByEmail(email);
-//        if (userEntity == null)
-//            throw new UsernameNotFoundException(email);
-//
-//        ModelMapper mapper = new ModelMapper();
-//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//
-//        return mapper.map(userEntity, UserDto.class);
-//    }
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-//    @Override // UserDetailsService의 추상 메서드 구현, 로그인 시 사용자 정보를 가져오는 메서드
-//    // UserDetailsService를 상속받아 loadUserByUsername 메서드를 구현하면
-//    // 스프링 시큐리티가 로그인 요청을 처리할 때 이 메서드를 호출하여 사용자 정보를 가져옴
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//        UserEntity userEntity = userRepository.findByEmail(username);
-//
-//        if (userEntity == null)
-//            throw new UsernameNotFoundException(username + ": not found");
-//
-//        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
-//                true, true, true, true,
-//                new ArrayList<>());
-//
-//    }
-
-
+        UserDto userDto = mapper.map(userEntity, UserDto.class);
+        return userDto;
+    }
 }

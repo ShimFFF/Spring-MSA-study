@@ -1,25 +1,51 @@
 package com.example.userservice;
 
+import feign.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.Duration;
 
 @EnableDiscoveryClient // Eureka Server에 서비스 등록
 @SpringBootApplication
+@EnableFeignClients
 public class UserServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
-	// 비밀번호 암호화, 복호화를 위한 빈 등록
-	// 빈등록을 여기서 하는 이유?: 다른 패키지에서 사용하기 위해??
 	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
+//    @LoadBalanced
+	public RestTemplate getRestTemplate() {
+		int TIMEOUT = 5000;
+
+		RestTemplate restTemplate = new RestTemplateBuilder()
+				.setConnectTimeout(Duration.ofMillis(TIMEOUT))
+				.setReadTimeout(Duration.ofMillis(TIMEOUT))
+				.build();
+
+		return restTemplate;
+	}
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder()
+	{
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	public Logger.Level feignLoggerLevel() {
+		return Logger.Level.FULL;
+	}
+//    @Bean
+//    public FeignErrorDecoder getFeignErrorDecoder() {
+//        return new FeignErrorDecoder();
+//    }
 }
