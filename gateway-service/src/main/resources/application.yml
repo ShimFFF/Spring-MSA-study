@@ -3,108 +3,110 @@ server:
 
 eureka:
   client:
-    fetch-registry: true
     register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka
 
 spring:
   config:
-    import: optional:configserver:http://172.25.82.232:8888/
+    activate:
+      on-profile: default
   application:
-    name: gateway-service
+    name: apigateway-service
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+#    listener:
+#      simple:
+#        prefetch: 5
   cloud:
-    config:
-      name: ecommerce
     gateway:
-      default-filters: # ?? ?? ??, ??? ?? ??? ??
-          # ?? ??? ?? ??, ?? ??? ??, ?? ??? ??
+      default-filters:
         - name: GlobalFilter
           args:
             baseMessage: Spring Cloud Gateway Global Filter
             preLogger: true
             postLogger: true
-
       routes:
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/login # 로그인 요청이 오면
-            - Method=POST
-          filters:
-            - RemoveRequestHeader=Cookie # 전달되는 Data값을 매번 새로운 데이터로 인식하기 위해
-            # /user-service/(?<segment.*>)로 들어오는 요청을 /${segment}로 변경
-            # Uri 값을 다시 작성해서 전달하는 방식으로 바꿔봄
-            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
-
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user-service/users # 회원가입 요청이 오면
+            - Path=/user-service/login
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
-
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/actuator/** # 엑추에이터 호출하면
-            - Method=POST, GET
+            - Path=/user-service/users
+            - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
-
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user-service/** # 나머지 요청이 오면
+            - Path=/user-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
             - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment.*>), /$\{segment}
-
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
             - Path=/catalog-service/**
-
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
-
         - id: first-service
-          uri: http://localhost:8081/
-          # /first-service? ???? http://localhost:8001/first-service/**? ???
+          uri: lb://MY-FIRST-SERVICE
           predicates:
             - Path=/first-service/**
-          filters: # ?? ?? ? key ? ?? ?? ? velue ?
-#             - AddRequestHeader=first-request, first-request-header2
-#             - AddResponseHeader=first-response, first-response-header2
+          filters:
+            - AddRequestHeader=first-request, first-request-header-by-yaml
+            - AddResponseHeader=first-response, first-response-header-from-yaml
             - CustomFilter
-
         - id: second-service
-          uri: http://localhost:8082/
+          uri: lb://MY-SECOND-SERVICE
           predicates:
             - Path=/second-service/**
           filters:
-#             - AddRequestHeader=second-request, second-request-header2
-#             - AddResponseHeader=second-response, second-response-header2
-              - name: CustomFilter
-              - name: LoggingFilter
-                args:
-                  baseMessage: Spring Cloud Gateway Logging Filter
-                  preLogger: true
-                  postLogger: true
+            - AddRequestHeader=second-request, second-request-header-by-yaml
+            - AddResponseHeader=second-response, second-response-header-from-yaml
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: Hi, there.
+                preLogger: true
+                postLogger: true
 
-# 엑추에이터 설정, actuator/refresh로 접속하면 설정을 다시 불러옴
+#token:
+#  secret: user_token
+
 management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace
+        include: refresh, health, beans, httpexchanges, busrefresh, info, metrics, prometheus

@@ -30,11 +30,37 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Spring Cloud Bootstrap
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+	//JWT 관련 라이브러리
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// Prometheus 및 Micrometer
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// Spring Cloud LoadBalancer (로드 밸런싱을 위해
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+	// Resilience4j (서킷 브레이커 패턴을 위해
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Spring Data R2DBC
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+
+
 }
 
 dependencyManagement {
