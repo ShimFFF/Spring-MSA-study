@@ -8,7 +8,7 @@ spring:
     password:
 
 token:
-  expiration_time: 86400000
+  expiration_time: 86400001
   secret: '{cipher}3fa2cb08f29834681f19b1d1cab296c734039a4776c4ae5541e1db3134af6fc2'
 
 gateway:
