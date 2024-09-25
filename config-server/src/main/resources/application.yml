@@ -18,13 +18,15 @@ spring:
         #          username: <github-id>
         #          password: <gihub-accessToken>
         bootstrap: true
-#  rabbitmq:
-#    host: 127.0.0.1
-#    port: 5672
-#    username: guestx
-#    password: guest
 
-management:
+  # RabbitMQ 설정
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guestx
+    password: guest
+
+management: # 엑추에이터 설정
   endpoints:
     web:
       exposure:
