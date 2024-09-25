@@ -13,7 +13,7 @@ spring:
 #          search-locations: file:///C://work//git-local-repo
         git: #default uri? ????? ?? ??? ??
           uri: https://github.com/ShimFFF/Spring-MSA-study
-          search-paths: yml
+          search-paths: config
           default-label: main
         #          username: <github-id>
         #          password: <gihub-accessToken>

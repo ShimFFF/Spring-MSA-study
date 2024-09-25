@@ -6,3 +6,10 @@ spring:
     # 이렇게 입력하면 config 서버에서 암호화된 값이 복호화되어 사용됨
     username: '{cipher}ee1ba6a4ce7839365a01adc23ee0f2652e06c4df2aee72b51f74cde0dac1cfc0'
     password:
+
+token:
+  expiration_time: 86400000
+  secret: '{cipher}3fa2cb08f29834681f19b1d1cab296c734039a4776c4ae5541e1db3134af6fc2'
+
+gateway:
+  ip: '{cipher}767b797997c18bfe029e69452594e6604843dad4f6bbeb918e16bc7017bf7c95'
