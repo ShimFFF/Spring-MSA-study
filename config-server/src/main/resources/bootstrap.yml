@@ -1,5 +1,5 @@
-#encrypt:
-#  #      key: abcdefghijklmnopqrstuvwxyz0123456789
+encrypt:
+      key: abcdefghijklmnopqrstuvwxyz0123456789 # 암호화를 시킬 값
 #  key-store:
 #    location: file://${user.home}/Desktop/git/toy-msa/config-service/apiEncryptionKey.jks
 #    #        location: file:/apiEncryptionKey.jks
