@@ -3,4 +3,4 @@ token:
   secret: user_token
 
 gateway:
-  ip: ${{secret.SERVER_IP}}
+  ip: 127.0.0.1
