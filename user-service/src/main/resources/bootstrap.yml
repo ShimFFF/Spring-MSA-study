@@ -2,6 +2,6 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-      name: ecommerce #내가 가져오고자 하는 yml 이름
+      name: user-service #내가 가져오고자 하는 yml 이름
 #    profiles:
 #      active: dev
