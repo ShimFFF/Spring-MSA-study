@@ -23,6 +23,8 @@ public class UserServiceApplication {
 
 	@Bean
 //    @LoadBalanced
+	//Order Service를 호출하기 위해
+	// RestTemplate을 Bean으로 등록
 	public RestTemplate getRestTemplate() {
 		int TIMEOUT = 5000;
 
