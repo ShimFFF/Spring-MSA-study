@@ -63,6 +63,8 @@ public class AuthenticationFilterNew  extends UsernamePasswordAuthenticationFilt
         UserDto userDetails = userService.getUserDetailsByEmail(userName);
 
         byte[] secretKeyBytes = Base64.getEncoder().encode(environment.getProperty("token.secret").getBytes());
+        System.out.println("secretKey: " + environment.getProperty("token.secret"));
+        System.out.println(" expiration_time: " + environment.getProperty("token.expiration_time"));
 
         SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
