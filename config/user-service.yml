@@ -4,12 +4,12 @@ spring:
     url: jdbc:h2:~/test
     # '{cipher}암호화 된 값' 형태로 암호화된 값을 입력
     # 이렇게 입력하면 config 서버에서 암호화된 값이 복호화되어 사용됨
-    username: '{cipher}ee1ba6a4ce7839365a01adc23ee0f2652e06c4df2aee72b51f74cde0dac1cfc0'
+    username: '{cipher}AQBXGY1rNtd1zvXb+PKvAat1/TPDUB+S48uTyUxK22Vlbfbzf6Cr+bKnoI+2vMK0Q/TCiP4LAR3aQvSwk+NeXhZIXLVg97CNZr2fQqO3TEiADcktagUg5t1mRFEXSkX22SgBrk8cWXBLDLwKmLqhZLlRVK8aziYPMoB4gGaQFyHqksgx4MozZKiQ2AfHaTUw5XDpUQ7guvx002YchV1jWRo/re2nSOWRNEwI9zvncqzZjurvZ3krIExztF9fdSca7eZnW06DnZ/l6Gujjm74DF2+xqEjexxZUbzKasyIgYdJV+/f6bg0EiH81+/GqWNzfB0fDKRO1tA5UATFNzeUzBgMDdMZpeiLaGigUUc6oiaEXrUucBSqV6RQCqeNyYy4fag='
     password:
 
 token:
   expiration_time: 86400001
-  secret: '{cipher}3fa2cb08f29834681f19b1d1cab296c734039a4776c4ae5541e1db3134af6fc2'
+  secret: '{cipher}AQAWTpZCf/Z6GAs3IdARrIdkNdQ6gKp9m1araEzxh4J+7qc7p9bdIG1ux6EJTJzc/1zObky5vHhbrkQesWISwIAbP7ZTN+BEPv64bM73WLRm61e6VLDTAcuYjtxX68X/FxwY8qiZwZq84nvLidbpO2WoUxT2ZSLNaLelqdiCu2ijQdcrwIPxCmOHUcG1dm1ptetifazs8GRTtpi6EzjI8sLkITC0FBBo70PgpbufRoAnqK1aGE/CNJl0qTa0ceuCoHJ8N0gMyLMnqcW4zDfe1jhEq32L+7Vsx0kdAKB99T+1yXwm+7Q5YRlwZEXK/ajKq09utLSHDJmvzyG5s8gEGVVDZb3l/6ZBUaJvSwjMxAxSBa/MiyDucskpX5hqOKDmGKc='
 
 gateway:
-  ip: '{cipher}767b797997c18bfe029e69452594e6604843dad4f6bbeb918e16bc7017bf7c95'
+  ip: '{cipher}AQAil6c9Hzy6zyj4Qm2tj24ZMEEuoPJGy7RprlDLEnE/trdRxNChfYhtCI/8N3dgr/XZSnw8oyeFhbTdJ4T/q4zLtmE8HpsQcQDMzPsQNL7+5/t1bidNM2WOiHjAg+Cz1L6yoC+weeVNXwHgdCvUoIfhc1yZly+GPvSGKXD6EllLisBcnWCE2tLZvNsYflvSX1CT5yh/TyF3kIvniLBL3e0bzyoE6o9Wd3Ce7rPC20Mxz2Osd3m8W1UBIwY6XaMHVFcBsPYe3Fclt7Zbf1tmoGqJCLQzE+2cp4sfK1LmvODUNN6TTxbtaodJP+0sI3jVmPQGPDT92kVVL67c1AwinsJ0VHLHoAsy5fsoRtKAf/v5/qT3GuRq73TqUrC/RbgB6ew='
