@@ -109,6 +109,7 @@ public class UserController {
     )
     @GetMapping("/users/{userId}")
     public ResponseEntity getUser(@PathVariable("userId") String userId) {
+        //getUserByUserId에서 사용자의 주문 내역도 가져올 예정
         UserDto userDto = userService.getUserByUserId(userId);
 
         if (userDto == null) {
