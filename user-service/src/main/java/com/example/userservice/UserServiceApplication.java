@@ -23,8 +23,10 @@ public class UserServiceApplication {
 
 	@Bean
 //    @LoadBalanced
-	//Order Service를 호출하기 위해
+	// UserServiceApplication에서 빈을 등록해주는 이유는
+	// Order Service를 호출하기 위해
 	// RestTemplate을 Bean으로 등록
+	// Bean으로 등록한 RestTemplate은 @Autowired로 주입받아 사용 가능
 	public RestTemplate getRestTemplate() {
 		int TIMEOUT = 5000;
 
