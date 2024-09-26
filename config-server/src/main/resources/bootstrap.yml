@@ -1,7 +1,7 @@
 encrypt:
-      key: abcdefghijklmnopqrstuvwxyz0123456789 # 암호화를 시킬 값
-#  key-store:
-#    location: file://${user.home}/Desktop/git/toy-msa/config-service/apiEncryptionKey.jks
-#    #        location: file:/apiEncryptionKey.jks
-#    password: test1234
-#    alias: apiEncryptionKey
+      #key: abcdefghijklmnopqrstuvwxyz0123456789 # 암호화를 시킬 값
+  key-store: # 키가 있는 경로
+    location: file://C:/GitFolder/Spring-MSA-study/config-server/apiEncryptionKey.jks
+    #        location: file:/apiEncryptionKey.jks
+    password: shim1234 #키 비밀 번호
+    alias: apiEncryptionKey #키 별칭
