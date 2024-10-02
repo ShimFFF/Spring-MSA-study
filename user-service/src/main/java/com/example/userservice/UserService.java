@@ -10,7 +10,10 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -81,6 +84,11 @@ public class UserService implements UserDetailsService {
         return returnUserDto;
     }
 
+    // #1-1 order-service를 rest template을 사용해 연결
+    // #1-2 유저의 주문 내역을 받아와...!!!
+    // #2-1 feign client를 사용해 연결
+    // #2-2 feign client의 예외 처리
+    // #3-1 ErrorDecoder를 통한 예외처리
     public UserDto getUserByUserId(String userId) {
         UserEntity userEntity = userRepository.findByUserId(userId);
 
@@ -94,13 +102,22 @@ public class UserService implements UserDetailsService {
         /* #1-1 Connect to order-service using a rest template */
         /* @LoadBalanced 로 선언헀으면, apigateway-service로 호출 못함 */
         /* http://ORDER-SERVICE/order-service/1234-45565-34343423432/orders */
-//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
-//        String orderUrl = String.format("http://127.0.0.1:8000/order-service/%s/orders", userId);
-//        ResponseEntity<List<ResponseOrder>> orderListResponse =
-//                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
-//                                            new ParameterizedTypeReference<List<ResponseOrder>>() {
-//                });
-//        ordersList = orderListResponse.getBody();
+        // 구성 정보 값으로 orderUrl 설정
+//        String orderUrl = String.format(env.getProperty("order_service.url")+"/%s/orders", userId);
+
+        // 127.0.0.1:8000은 Gateway Service 주소임
+        // order-service로 요청을 보내기 위해, Gateway Service 주소를 사용
+        // 근데 이런 정보는 바뀔 수가 있어서 별도의 구성 파일로 관리하는 것이 좋음
+        String orderUrl = String.format("http://127.0.0.1:8000/order-service/%s/orders", userId);
+        ResponseEntity<List<ResponseOrder>> orderListResponse =
+                // exchange: HTTP method, request entity, response type
+                // exchange로 orderUrl에 GET 요청을 보내고, List<ResponseOrder> 타입으로 받음
+                restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+                                            new ParameterizedTypeReference<List<ResponseOrder>>() {
+                });
+        ordersList = orderListResponse.getBody();
+
+
         /* #1-2 Connect to catalog-service using a rest template */
         /* http://CATALOG-SERVICE/catalog-service/catalogs */
 //        List<ResponseCatalog> catalogList = new ArrayList<>();
@@ -112,6 +129,7 @@ public class UserService implements UserDetailsService {
 //        catalogList = catalogListResponse.getBody();
 //        System.out.println(catalogList);
 
+
         /* Using a feign client */
         /* #2 Feign exception handling */
         try {
@@ -122,12 +140,15 @@ public class UserService implements UserDetailsService {
             log.error(ex.getMessage());
         }
 
+
         /* #3-1 ErrorDecoder */
 //        ordersList = orderServiceClient.getOrders(userId);
 //        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker1");
 //        CircuitBreaker circuitBreaker2 = circuitBreakerFactory.create("circuitBreaker2");
 //        ordersList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId),
 //                throwable -> new ArrayList<>());
+
+
         /* #3-2 ErrorDecoder for catalog-service */
 //        List<ResponseCatalog> catalogList = catalogServiceClient.getCatalogs();
 

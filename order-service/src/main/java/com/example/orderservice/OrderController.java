@@ -63,6 +63,8 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
+    // 사용자의 주문 내역 조회
+    // user-service에서 호출해서 사용하는 거거ㅓ걱
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId) throws Exception {
         log.info("Before retrieve orders data");
