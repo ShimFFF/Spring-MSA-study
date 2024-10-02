@@ -14,5 +14,8 @@ token:
 gateway:
   ip: '{cipher}AQAil6c9Hzy6zyj4Qm2tj24ZMEEuoPJGy7RprlDLEnE/trdRxNChfYhtCI/8N3dgr/XZSnw8oyeFhbTdJ4T/q4zLtmE8HpsQcQDMzPsQNL7+5/t1bidNM2WOiHjAg+Cz1L6yoC+weeVNXwHgdCvUoIfhc1yZly+GPvSGKXD6EllLisBcnWCE2tLZvNsYflvSX1CT5yh/TyF3kIvniLBL3e0bzyoE6o9Wd3Ce7rPC20Mxz2Osd3m8W1UBIwY6XaMHVFcBsPYe3Fclt7Zbf1tmoGqJCLQzE+2cp4sfK1LmvODUNN6TTxbtaodJP+0sI3jVmPQGPDT92kVVL67c1AwinsJ0VHLHoAsy5fsoRtKAf/v5/qT3GuRq73TqUrC/RbgB6ew='
 
-order_service:
-  url: http://127.0.0.1:8000/order-service
+#order_service: # 그냥 gateway 주소로 order service 접근하기
+#  url: http://127.0.0.1:8000/order-service
+
+order_service: # eureka로 order service 접근하기
+  url: http://ORDER-SERVICE/order-service
