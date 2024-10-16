@@ -105,6 +105,10 @@ public class UserService implements UserDetailsService {
         // 구성 정보 값으로 orderUrl 설정
 //        String orderUrl = String.format(env.getProperty("order_service.url")+"/%s/orders", userId);
 
+
+
+        /* #1-2 Connect to catalog-service using a rest template */
+        /*
         // 127.0.0.1:8000은 Gateway Service 주소임
         // order-service로 요청을 보내기 위해, Gateway Service 주소를 사용
         // 근데 이런 정보는 바뀔 수가 있어서 별도의 구성 파일로 관리하는 것이 좋음
@@ -115,7 +119,7 @@ public class UserService implements UserDetailsService {
                 restTemplate.exchange(orderUrl, HttpMethod.GET, null,
                                             new ParameterizedTypeReference<List<ResponseOrder>>() {
                 });
-        ordersList = orderListResponse.getBody();
+        ordersList = orderListResponse.getBody();*/
 
 
         /* #1-2 Connect to catalog-service using a rest template */
