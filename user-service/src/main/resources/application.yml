@@ -77,7 +77,7 @@ management:
 greeting:
   message: Hello, ${spring.application.name}
 
-logging:
+logging: # FeignClient 사용 시 발생항 로그 출력
   level:
     org.springframework.cloud: DEBUG
   pattern:
