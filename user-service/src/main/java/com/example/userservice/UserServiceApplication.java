@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +23,7 @@ public class UserServiceApplication {
 	}
 
 	@Bean
-//    @LoadBalanced
+    @LoadBalanced // spring cloud eureka에 등록된 서비스 이름으로 호출하기 위해
 	// UserServiceApplication에서 빈을 등록해주는 이유는
 	// Order Service를 호출하기 위해
 	// RestTemplate을 Bean으로 등록
